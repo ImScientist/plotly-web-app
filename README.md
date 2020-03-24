@@ -17,7 +17,6 @@
     export FLASK_APP=app:server
     flask run
     ```
-- Run with gunicorn:
-  ```shell script
-  gunicorn -b 0.0.0.0:5000 app:server
-  ```
+- Azure Web app deployment notes:
+  In `web-app` -> `Configuration` -> `General settings` set the 
+  startup command to `gunicorn -b 0.0.0.0 app:server` 
