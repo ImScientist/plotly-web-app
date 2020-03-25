@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def init_data(size: int = 2000, seed: int = 11):
+def init_data(size: int = 4000, seed: int = 15):
     np.random.seed(seed)
 
     fp_mean, fp_std = 16, 10

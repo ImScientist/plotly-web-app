@@ -20,3 +20,22 @@
 - Azure Web app deployment notes:
   In `web-app` -> `Configuration` -> `General settings` set the 
   startup command to `gunicorn -b 0.0.0.0 app:server` 
+
+### App with preprocessed content
+- Idea: Instead of splitting the data, calculating the 
+roc-auc scores, generating and plotting the new figures, we can 
+generate, dump and load all possible figures and roc-auc scores.
+
+- Generate the content by executing:
+    ```shell script
+    python create_content.py
+    ```
+    This content is used in `app_2.py`:
+    ```shell script
+    export FLASK_APP=app_2:server
+    flask run
+    ```
+  
+- Azure Web app deployment notes:
+  In `web-app` -> `Configuration` -> `General settings` set the 
+  startup command to `gunicorn -b 0.0.0.0 app_2:server`  
