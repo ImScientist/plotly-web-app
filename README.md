@@ -39,3 +39,16 @@ generate, dump and load all possible figures and roc-auc scores.
 - Azure Web app deployment notes:
   In `web-app` -> `Configuration` -> `General settings` set the 
   startup command to `gunicorn -b 0.0.0.0 app_2:server`  
+
+
+## Use a docker image
+  In case you want to deploy the app somewhere else:
+  ```shell script
+  docker build -t plotly_app:1.0 . --build-arg runtime_path="."
+  ```
+  Launch a container:
+  ```shell script
+  docker run -p 80:80 plotly_app:1.0 /bin/bash
+
+  docker run -it --rm -p 80:80 plotly_app:1.0 /bin/bash
+  ```

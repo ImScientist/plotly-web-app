@@ -15,7 +15,7 @@ LOAD_GENERATED_DATA = True
 
 if LOAD_GENERATED_DATA is True:
     print('AAA')
-    with open(os.path.join('content_vis', 'content.pickle'), 'rb') as f:
+    with open(os.path.join('content', 'content.pickle'), 'rb') as f:
         content = pickle.load(f)
 
     ratios = content['ratios']
