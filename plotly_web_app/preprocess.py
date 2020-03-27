@@ -19,7 +19,7 @@ def generate_figures_and_data_splits(ratios, fp_members, fm_members):
     for ratio in ratios:
         fp_members_fed = split_members_into_n_groups(fp_members, similarity_ratio=ratio)
         fm_members_fed = split_members_into_n_groups(fm_members, similarity_ratio=ratio)
-        labels = [f'pod {i}' for i in range(len(fp_members_fed))]
+        labels = [f'device {i}' for i in range(len(fp_members_fed))]
 
         fig_p = ff.create_distplot(fp_members_fed, labels, show_hist=False, colors=px.colors.sequential.Sunsetdark[2:])
         fig_m = ff.create_distplot(fm_members_fed, labels, show_hist=False, colors=px.colors.sequential.Teal[2:])
@@ -73,10 +73,12 @@ def calculate_roc_auc_scores(ratios, content_p, content_m):
     return roc_auc_scores
 
 
-def create_content(data_dir: str = 'content'):
+def create_content(data_dir: str = 'content',
+                   size: int = 4000,
+                   seed: int = 15):
     """ Create (and dump) the content needed to generate the interactive visualization.
     """
-    fp_members, fm_members = init_data()
+    fp_members, fm_members = init_data(size, seed)
     score = roc_auc_score(
         y_true=np.concatenate((np.ones_like(fp_members), np.zeros_like(fm_members))),
         y_score=np.concatenate((fp_members, fm_members))

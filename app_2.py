@@ -14,7 +14,8 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 LOAD_GENERATED_DATA = True
 
 if LOAD_GENERATED_DATA is True:
-    with open(os.path.join('content', 'content.pickle'), 'rb') as f:
+    print('AAA')
+    with open(os.path.join('content_vis', 'content.pickle'), 'rb') as f:
         content = pickle.load(f)
 
     ratios = content['ratios']
@@ -24,6 +25,7 @@ if LOAD_GENERATED_DATA is True:
     score = content['score']
 
 else:
+    print('BBB')
     fp_members, fm_members = init_data()
     score = roc_auc_score(
         y_true=np.concatenate((np.ones_like(fp_members), np.zeros_like(fm_members))),
@@ -35,6 +37,8 @@ else:
     roc_auc_scores = calculate_roc_auc_scores(ratios, content_p, content_m)
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app.css.config.serve_locally = True
+app.scripts.config.serve_locally = True
 server = app.server
 
 app.layout = html.Div([

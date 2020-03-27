@@ -18,6 +18,8 @@ score = roc_auc_score(
 )
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app.css.config.serve_locally = True
+app.scripts.config.serve_locally = True
 server = app.server
 
 app.layout = html.Div([
