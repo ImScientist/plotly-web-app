@@ -1,4 +1,6 @@
 .gitignore
+.gcloudignore
 .ipynb_checkpoints
+app.yaml
 notebooks
 plotly_web_app.egg-info

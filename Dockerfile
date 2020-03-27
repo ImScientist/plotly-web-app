@@ -13,5 +13,7 @@ RUN python setup.py install
 
 EXPOSE 80
 
-#CMD ["gunicorn", "app:server", "-b", "0.0.0.0:80"]
+CMD ["gunicorn", "app_2:server", "-b", "0.0.0.0:80"]
+
+# docker run -it --rm -p 80:80 plotly_app:1.0 /bin/bash
 #"gunicorn app:server -b 0.0.0.0:80"
