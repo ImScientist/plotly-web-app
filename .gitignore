@@ -1,6 +1,5 @@
 .idea/*
 notebooks/*
-!notebooks/medium_source_code_p1.py
 
 
 # Byte-compiled / optimized / DLL files
