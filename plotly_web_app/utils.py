@@ -3,6 +3,8 @@ from sklearn.metrics import roc_auc_score
 
 
 def avg_roc_auc_fed(fm_members_fed, fp_members_fed):
+    """ Generate the roc-auc scores for n data sets, their average and std.
+    """
     roc_auc_fed = list()
     for fm, fp in zip(fm_members_fed, fp_members_fed):
         roc_auc_fed.append(
