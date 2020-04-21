@@ -17,10 +17,13 @@
     flask run
     ```
  
-- Speed up the app   
-  Idea: Instead of splitting the data, calculating the roc-auc scores, 
-  generating and plotting the new figures, we can generate, dump and load all 
-  possible figures and roc-auc scores.
+- Speed up the app    
+  You have probably noticed that figures do not update instantly when you
+  change some parameters. Instead of splitting the data, calculating the 
+  roc-auc scores, 
+  generating and plotting the new figures for every change in the data 
+  splitting parameters, we can generate, dump and load all possible 
+  figures and roc-auc scores.  
 
   Generate the content by executing:
     ```shell script

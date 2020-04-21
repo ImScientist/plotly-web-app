@@ -7,4 +7,4 @@ if __name__ == '__main__':
     Example: 
         python create_content.py
     """
-    create_content('content', size=2000, seed=11)
+    create_content('content')

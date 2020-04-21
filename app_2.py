@@ -14,7 +14,7 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 LOAD_GENERATED_DATA = True
 
 if LOAD_GENERATED_DATA is True:
-    print('AAA')
+    print('Load generated data.')
     with open(os.path.join('content', 'content.pickle'), 'rb') as f:
         content = pickle.load(f)
 
@@ -25,7 +25,7 @@ if LOAD_GENERATED_DATA is True:
     score = content['score']
 
 else:
-    print('BBB')
+    print('Generate all possible plots.')
     fp_members, fm_members = init_data()
     score = roc_auc_score(
         y_true=np.concatenate((np.ones_like(fp_members), np.zeros_like(fm_members))),

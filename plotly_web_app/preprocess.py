@@ -19,10 +19,17 @@ def generate_figures_and_data_splits(ratios, fp_members, fm_members):
     for ratio in ratios:
         fp_members_fed = split_members_into_n_groups(fp_members, similarity_ratio=ratio)
         fm_members_fed = split_members_into_n_groups(fm_members, similarity_ratio=ratio)
-        labels = [f'device {i}' for i in range(len(fp_members_fed))]
 
-        fig_p = ff.create_distplot(fp_members_fed, labels, show_hist=False, colors=px.colors.sequential.Sunsetdark[2:])
-        fig_m = ff.create_distplot(fm_members_fed, labels, show_hist=False, colors=px.colors.sequential.Teal[2:])
+        labels = [f'pod {i}' for i in range(len(fp_members_fed))]
+
+        fig_p = ff.create_distplot(fp_members_fed,
+                                   labels,
+                                   show_hist=False,
+                                   colors=px.colors.sequential.Sunsetdark[2:])
+        fig_m = ff.create_distplot(fm_members_fed,
+                                   labels,
+                                   show_hist=False,
+                                   colors=px.colors.sequential.Teal[2:])
 
         fig_p.update_traces(opacity=0.8)
         fig_p.update_layout(

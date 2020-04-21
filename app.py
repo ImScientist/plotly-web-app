@@ -5,6 +5,7 @@ import numpy as np
 from sklearn.metrics import roc_auc_score
 
 import plotly.figure_factory as ff
+import plotly.express as px
 
 from plotly_web_app.data import init_data, split_members_into_n_groups
 from plotly_web_app.utils import avg_roc_auc_fed
@@ -16,6 +17,7 @@ score = roc_auc_score(
     y_true=np.concatenate((np.ones_like(fp_members), np.zeros_like(fm_members))),
     y_score=np.concatenate((fp_members, fm_members))
 )
+ratios = [0.02, 0.2, 0.4, 0.6, 0.8, 1]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.css.config.serve_locally = True
@@ -31,8 +33,8 @@ app.layout = html.Div([
                 id='fm-slider',
                 min=0,
                 max=1,
-                value=0.3,
-                marks={str(i): str(i) for i in np.round(np.linspace(0, 1, 11), 2)},
+                value=0.4,
+                marks={str(i): str(i) for i in ratios},
                 step=None
             )], style={'width': '45%', 'display': 'inline-block'}
         ),
@@ -42,7 +44,7 @@ app.layout = html.Div([
                 min=0,
                 max=1,
                 value=0.8,
-                marks={str(i): str(i) for i in np.round(np.linspace(0, 1, 11), 2)},
+                marks={str(i): str(i) for i in ratios},
                 step=None
             )], style={'width': '45%', 'display': 'inline-block',
                        'float': 'right'}
@@ -85,8 +87,30 @@ def update_fp_fm_dist(ratio_p, ratio_m):
     fm_members_fed = split_members_into_n_groups(fm_members, similarity_ratio=ratio_m)
 
     labels = [f'pod {i}' for i in range(len(fp_members_fed))]
-    fig_p = ff.create_distplot(fp_members_fed, labels)
-    fig_m = ff.create_distplot(fm_members_fed, labels)
+    fig_p = ff.create_distplot(fp_members_fed,
+                               labels,
+                               show_hist=False,
+                               colors=px.colors.sequential.Sunsetdark[2:])
+    fig_m = ff.create_distplot(fm_members_fed,
+                               labels,
+                               show_hist=False,
+                               colors=px.colors.sequential.Teal[2:])
+
+    fig_p.update_traces(opacity=0.8)
+    fig_p.update_layout(
+        title_text='Scores distribution (positive class)',
+        xaxis_title_text='Score',
+        bargap=0.85,
+        bargroupgap=0
+    )
+
+    fig_m.update_traces(opacity=0.8)
+    fig_m.update_layout(
+        title_text='Scores distribution (negative class)',
+        xaxis_title_text='Score',
+        bargap=0.85,
+        bargroupgap=0
+    )
 
     roc_auc_fed, roc_auc_mean, _ = avg_roc_auc_fed(fm_members_fed, fp_members_fed)
     roc_auc_fed = list(map(lambda x: str(np.round(x, 3)), roc_auc_fed))

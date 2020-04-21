@@ -7,7 +7,7 @@ def init_data(
         fp_mean: float = 16,
         fp_std: float = 10,
         fm_mean: float = -16,
-        fm_std: float = -10
+        fm_std: float = 20
 ):
     """ Generate the scores that belong to the positive/negative class
     """
