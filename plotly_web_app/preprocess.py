@@ -1,13 +1,16 @@
 import os
 import pickle
 import numpy as np
-from sklearn.metrics import roc_auc_score
 
+from .constants import RATIOS
 from .data import split_members_into_n_groups, init_data
 from .utils import avg_roc_auc_fed
-
-import plotly.express as px
-import plotly.figure_factory as ff
+from .visualization import (
+    build_negative_distribution_figure,
+    build_positive_distribution_figure,
+    calculate_global_roc_auc,
+    format_roc_auc_values,
+)
 
 
 def generate_figures_and_data_splits(ratios, fp_members, fm_members):
@@ -19,40 +22,15 @@ def generate_figures_and_data_splits(ratios, fp_members, fm_members):
     for ratio in ratios:
         fp_members_fed = split_members_into_n_groups(fp_members, similarity_ratio=ratio)
         fm_members_fed = split_members_into_n_groups(fm_members, similarity_ratio=ratio)
+        fig_p = build_positive_distribution_figure(fp_members_fed)
+        fig_m = build_negative_distribution_figure(fm_members_fed)
 
-        labels = [f'pod {i}' for i in range(len(fp_members_fed))]
-
-        fig_p = ff.create_distplot(fp_members_fed,
-                                   labels,
-                                   show_hist=False,
-                                   colors=px.colors.sequential.Sunsetdark[2:])
-        fig_m = ff.create_distplot(fm_members_fed,
-                                   labels,
-                                   show_hist=False,
-                                   colors=px.colors.sequential.Teal[2:])
-
-        fig_p.update_traces(opacity=0.8)
-        fig_p.update_layout(
-            title_text='Scores distribution (positive class)',
-            xaxis_title_text='Score',
-            bargap=0.85,
-            bargroupgap=0
-        )
-
-        fig_m.update_traces(opacity=0.8)
-        fig_m.update_layout(
-            title_text='Scores distribution (negative class)',
-            xaxis_title_text='Score',
-            bargap=0.85,
-            bargroupgap=0
-        )
-
-        content_p[ratio] = {
+        content_p[f"{ratio:.2f}"] = {
             'fig_p': fig_p,
             'data': fp_members_fed
         }
 
-        content_m[ratio] = {
+        content_m[f"{ratio:.2f}"] = {
             'fig_m': fig_m,
             'data': fm_members_fed
         }
@@ -68,13 +46,13 @@ def calculate_roc_auc_scores(ratios, content_p, content_m):
 
     for ratio_p in ratios:
         for ratio_m in ratios:
-            fm_members_fed = content_m[ratio_m]['data']
-            fp_members_fed = content_p[ratio_p]['data']
+            fm_members_fed = content_m[f"{ratio_m:.2f}"]['data']
+            fp_members_fed = content_p[f"{ratio_p:.2f}"]['data']
             roc_auc_fed, roc_auc_mean, _ = avg_roc_auc_fed(fm_members_fed, fp_members_fed)
 
-            roc_auc_scores[f"{ratio_p}_{ratio_m}"] = {
+            roc_auc_scores[f"{ratio_p:.2f}_{ratio_m:.2f}"] = {
                 'mean': str(np.round(roc_auc_mean, 3)),
-                'values': list(map(lambda x: str(np.round(x, 3)), roc_auc_fed))
+                'values': format_roc_auc_values(roc_auc_fed)
             }
 
     return roc_auc_scores
@@ -86,13 +64,10 @@ def create_content(data_dir: str = 'content',
     """ Create (and dump) the content needed to generate the interactive visualization.
     """
     fp_members, fm_members = init_data(size, seed)
-    score = roc_auc_score(
-        y_true=np.concatenate((np.ones_like(fp_members), np.zeros_like(fm_members))),
-        y_score=np.concatenate((fp_members, fm_members))
-    )
+    score = calculate_global_roc_auc(fp_members, fm_members)
 
     # create all figures
-    ratios = [0.02, 0.2, 0.4, 0.6, 0.8, 1]
+    ratios = list(RATIOS)
     content_p, content_m = generate_figures_and_data_splits(ratios, fp_members, fm_members)
     roc_auc_scores = calculate_roc_auc_scores(ratios, content_p, content_m)
 
@@ -108,3 +83,6 @@ def create_content(data_dir: str = 'content',
 
     with open(os.path.join(data_dir, 'content.pickle'), 'wb') as f:
         pickle.dump(content, f)
+
+    return content
+

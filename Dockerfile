@@ -1,15 +1,15 @@
-FROM python:3.8
+FROM python:3.12-slim
 
 ARG runtime_path
 ENV app_dir="/home/app"
-ENV log_dir="/var/log/app"
+ENV UV_PROJECT_ENVIRONMENT="/opt/venv"
+ENV PATH="/opt/venv/bin:$PATH"
 
 COPY ${runtime_path} ${app_dir}
-RUN mkdir -p "${log_dir}"
 WORKDIR ${app_dir}
 
-RUN pip install -r requirements.txt
-RUN python setup.py install
+RUN pip install --no-cache-dir uv
+RUN uv sync --no-dev
 
 EXPOSE 80
 

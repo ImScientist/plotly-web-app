@@ -1,4 +1,10 @@
+from __future__ import annotations
+
+from collections.abc import Sequence
+
 import numpy as np
+
+from .constants import DEFAULT_GROUP_COUNT
 
 
 def init_data(
@@ -11,33 +17,39 @@ def init_data(
 ):
     """ Generate the scores that belong to the positive/negative class
     """
-    np.random.seed(seed)
-    fp_members_ = np.random.randn(size) * fp_std + fp_mean
-    fm_members_ = np.random.randn(size) * fm_std + fm_mean
+    rng = np.random.default_rng(seed)
+    fp_members_ = rng.normal(loc=fp_mean, scale=fp_std, size=size)
+    fm_members_ = rng.normal(loc=fm_mean, scale=fm_std, size=size)
 
     return fp_members_, fm_members_
 
 
 def split_members_into_n_groups(
-        members,
+        members: Sequence[float],
         similarity_ratio: float = 1.,
-        n: int = 4
+        n: int = DEFAULT_GROUP_COUNT
 ):
     """ Split the data points into n groups.
 
     The data points distribution similarity between the groups
     depends on the similarity_ratio.
     """
+    if not 0 <= similarity_ratio <= 1:
+        raise ValueError('similarity_ratio must be between 0 and 1 inclusive')
+    if n <= 0:
+        raise ValueError('n must be a positive integer')
+
+    members = np.asarray(members)
     n_el = members.shape[0]
     n_identical = int(n_el * similarity_ratio)
 
     # generate n parts with identical distributions
     identical_parts = members[:n_identical]
-    identical_parts = np.split(identical_parts, n)
+    identical_parts = np.array_split(identical_parts, n)
 
     # generate n parts with non-identical distributions
     sorted_parts = np.array(sorted(members[n_identical:]))
-    sorted_parts = np.split(sorted_parts, n)
+    sorted_parts = np.array_split(sorted_parts, n)
 
     members_fed = [
         np.concatenate((sorted_part, identical_part))

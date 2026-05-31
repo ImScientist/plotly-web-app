@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "plotly-web-app"
+version = "0.1.0"
+description = "Interactive Dash app for exploring federated-style ROC-AUC behaviour"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+authors = [
+  { name = "Anton Ivanov", email = "a.i.ivanov.sv@gmail.com" },
+]
+dependencies = [
+  "dash>=2.18,<4",
+  "gunicorn>=23,<24",
+  "numpy>=1.26,<3",
+  "plotly>=5.24,<7",
+  "scikit-learn>=1.5,<2",
+]
+
+[tool.setuptools.packages.find]
+include = ["plotly_web_app*"]
+
+[tool.uv]
+package = true
+
