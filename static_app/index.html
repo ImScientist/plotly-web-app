@@ -31,13 +31,18 @@
       </section>
 
       <section class="metrics" aria-label="ROC-AUC summary">
-        <article class="metric-card panel">
-          <span class="metric-label">Global ROC-AUC</span>
-          <strong id="global-score">—</strong>
-        </article>
-        <article class="metric-card panel">
-          <span class="metric-label">Mean pod ROC-AUC</span>
-          <strong id="mean-score">—</strong>
+        <article class="metric-card panel metric-card-empty" aria-hidden="true"></article>
+        <article class="metric-card panel metric-card-combined">
+          <div class="metric-stack">
+            <div class="metric-stack-item">
+              <span class="metric-label">Global ROC-AUC</span>
+              <strong id="global-score">—</strong>
+            </div>
+            <div class="metric-stack-item">
+              <span class="metric-label">Mean pod ROC-AUC</span>
+              <strong id="mean-score">—</strong>
+            </div>
+          </div>
         </article>
         <article class="metric-card panel metric-list-card">
           <span class="metric-label">Pod ROC-AUC scores</span>

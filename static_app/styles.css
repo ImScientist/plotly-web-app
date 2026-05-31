@@ -102,6 +102,19 @@ select {
   padding: 0.8rem 1rem;
 }
 
+.metric-card-empty {
+  min-height: 100%;
+}
+
+.metric-stack {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.metric-stack-item {
+  display: grid;
+}
+
 .metric-card strong {
   display: block;
   margin-top: 0.35rem;
