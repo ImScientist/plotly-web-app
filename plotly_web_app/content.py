@@ -5,6 +5,8 @@ import pickle
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+
 from .constants import RATIOS
 from .data import init_data, split_members_into_n_groups
 from .preprocess import calculate_roc_auc_scores, generate_figures_and_data_splits
@@ -23,6 +25,42 @@ ContentDict = dict[str, Any]
 
 def ratio_to_key(ratio: float) -> str:
     return f"{ratio:.2f}"
+
+
+def _estimate_bandwidth(values: np.ndarray) -> float:
+    if values.size <= 1:
+        return 1.0
+
+    std = float(np.std(values, ddof=1))
+    q75, q25 = np.percentile(values, [75, 25])
+    iqr = float(q75 - q25)
+    sigma = min(std, iqr / 1.34) if iqr > 0 else std
+    if sigma <= 0:
+        sigma = max(abs(float(values.mean())), 1.0)
+    bandwidth = 0.9 * sigma * values.size ** (-1 / 5)
+    return bandwidth if bandwidth > 0 else 1.0
+
+
+def _build_density_curve(values: np.ndarray, grid_size: int = 200) -> dict[str, list[float]]:
+    values = np.asarray(values, dtype=float)
+    if values.size == 0:
+        return {"x": [], "y": []}
+
+    bandwidth = _estimate_bandwidth(values)
+    x_min = float(values.min() - 3 * bandwidth)
+    x_max = float(values.max() + 3 * bandwidth)
+    x_grid = np.linspace(x_min, x_max, grid_size)
+    scaled_distance = (x_grid[:, None] - values[None, :]) / bandwidth
+    density = np.exp(-0.5 * scaled_distance ** 2).sum(axis=1)
+    density /= values.size * bandwidth * np.sqrt(2 * np.pi)
+    return {
+        "x": [float(x) for x in x_grid],
+        "y": [float(y) for y in density],
+    }
+
+
+def _build_density_curves(groups: list[np.ndarray]) -> list[dict[str, list[float]]]:
+    return [_build_density_curve(group) for group in groups]
 
 
 def build_precomputed_content(size: int = 4000, seed: int = 15) -> ContentDict:
@@ -80,13 +118,13 @@ def build_static_content(size: int = 4000, seed: int = 15) -> ContentDict:
         },
         "positive_groups": {
             ratio_key: {
-                "data": [list(map(float, group)) for group in content_p[ratio_key]["data"]]
+                "curves": _build_density_curves(content_p[ratio_key]["data"])
             }
             for ratio_key in ratio_keys
         },
         "negative_groups": {
             ratio_key: {
-                "data": [list(map(float, group)) for group in content_m[ratio_key]["data"]]
+                "curves": _build_density_curves(content_m[ratio_key]["data"])
             }
             for ratio_key in ratio_keys
         },

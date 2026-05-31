@@ -31,7 +31,7 @@ Transitive packages such as Flask, SciPy, and Werkzeug are installed automatical
 
 ### Fully static Plotly.js version
 
-This variant removes Dash from runtime entirely. Python is only used to precompute and export JSON; the browser renders the charts and updates the controls client-side.
+This variant removes Dash from runtime entirely. Python is only used to precompute and export JSON; the browser renders smooth density curves and updates the controls client-side.
 
 Build the static JSON payload:
 

@@ -138,15 +138,6 @@ select {
   min-height: 420px;
 }
 
-.status {
-  margin-top: 1rem;
-  color: var(--muted);
-}
-
-.status.error {
-  color: var(--danger);
-  font-weight: 600;
-}
 
 @media (max-width: 640px) {
   .app-shell {
