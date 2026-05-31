@@ -48,11 +48,6 @@ uv run python app_2.py
 
 `app_2.py` is the faster variant and the default deployment target.
 
-### Experimental histogram view
-
-```bash
-uv run python app_3.py
-```
 
 ## Deployment
 
