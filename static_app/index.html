@@ -16,22 +16,19 @@
         </div>
       </header>
 
-      <section class="controls panel" aria-labelledby="controls-title">
-        <h2 id="controls-title">Controls</h2>
-        <div class="control-grid">
-          <label class="control-group" for="positive-ratio">
-            <span>Positive class similarity ratio</span>
-            <select id="positive-ratio"></select>
-          </label>
-          <label class="control-group" for="negative-ratio">
-            <span>Negative class similarity ratio</span>
-            <select id="negative-ratio"></select>
-          </label>
-        </div>
-      </section>
-
-      <section class="metrics" aria-label="ROC-AUC summary">
-        <article class="metric-card panel metric-card-empty" aria-hidden="true"></article>
+      <section class="metrics" aria-label="Controls and ROC-AUC summary">
+        <article class="metric-card panel controls-card" aria-label="Controls">
+          <div class="control-grid">
+            <label class="control-group" for="positive-ratio">
+              <span>Positive class similarity ratio</span>
+              <select id="positive-ratio"></select>
+            </label>
+            <label class="control-group" for="negative-ratio">
+              <span>Negative class similarity ratio</span>
+              <select id="negative-ratio"></select>
+            </label>
+          </div>
+        </article>
         <article class="metric-card panel metric-card-combined">
           <div class="metric-stack">
             <div class="metric-stack-item">

@@ -59,11 +59,6 @@ p {
   box-shadow: var(--shadow);
 }
 
-.controls {
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-
 .control-grid {
   display: flex;
   flex-direction: column;
@@ -74,11 +69,13 @@ p {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .control-group span {
   color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 400;
 }
 
 select {
@@ -102,9 +99,11 @@ select {
   padding: 0.8rem 1rem;
 }
 
-.metric-card-empty {
-  min-height: 100%;
+.controls-card {
+  display: grid;
+  gap: 0.65rem;
 }
+
 
 .metric-stack {
   display: grid;
