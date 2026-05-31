@@ -134,6 +134,11 @@ select {
   padding: 0.64rem;
 }
 
+.chart-panel h2 {
+  font-size: 1rem;
+  margin-bottom: 0.45rem;
+}
+
 .chart {
   min-height: 268px;
 }
