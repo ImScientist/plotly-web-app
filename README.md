@@ -29,6 +29,30 @@ Transitive packages such as Flask, SciPy, and Werkzeug are installed automatical
 
 ## Run locally
 
+### Fully static Plotly.js version
+
+This variant removes Dash from runtime entirely. Python is only used to precompute and export JSON; the browser renders the charts and updates the controls client-side.
+
+Build the static JSON payload:
+
+```bash
+uv run python build_static_app.py
+```
+
+Serve the static site locally:
+
+```bash
+uv run python serve_static_app.py --rebuild
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8000
+```
+
+The static app files live in `static_app/`, and the generated dataset is written to `static_app/data/content.json`.
+
 ### Live version
 
 This version recomputes the split distributions and ROC-AUC values on each slider update.

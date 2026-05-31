@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Static Plotly ROC-AUC Explorer</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" defer></script>
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="page-header">
+        <div>
+          <p class="eyebrow">Static Plotly.js demo</p>
+          <h1>Federated ROC-AUC explorer</h1>
+          <p class="subtitle">
+            Compare how positive and negative class score distributions change across pods without any
+            Python server callbacks at runtime.
+          </p>
+        </div>
+      </header>
+
+      <section class="controls panel" aria-labelledby="controls-title">
+        <h2 id="controls-title">Controls</h2>
+        <div class="control-grid">
+          <label class="control-group" for="positive-ratio">
+            <span>Positive class similarity ratio</span>
+            <select id="positive-ratio"></select>
+          </label>
+          <label class="control-group" for="negative-ratio">
+            <span>Negative class similarity ratio</span>
+            <select id="negative-ratio"></select>
+          </label>
+        </div>
+      </section>
+
+      <section class="metrics" aria-label="ROC-AUC summary">
+        <article class="metric-card panel">
+          <span class="metric-label">Global ROC-AUC</span>
+          <strong id="global-score">—</strong>
+        </article>
+        <article class="metric-card panel">
+          <span class="metric-label">Mean pod ROC-AUC</span>
+          <strong id="mean-score">—</strong>
+        </article>
+        <article class="metric-card panel metric-list-card">
+          <span class="metric-label">Pod ROC-AUC scores</span>
+          <ul id="pod-scores" class="score-list"></ul>
+        </article>
+      </section>
+
+      <section class="charts">
+        <article class="panel chart-panel">
+          <h2>Positive class distribution</h2>
+          <div id="positive-chart" class="chart"></div>
+        </article>
+        <article class="panel chart-panel">
+          <h2>Negative class distribution</h2>
+          <div id="negative-chart" class="chart"></div>
+        </article>
+      </section>
+
+      <p id="app-status" class="status" role="status" aria-live="polite">Loading static app…</p>
+      <noscript>This page needs JavaScript enabled to render the Plotly charts.</noscript>
+    </main>
+  </body>
+</html>
+
