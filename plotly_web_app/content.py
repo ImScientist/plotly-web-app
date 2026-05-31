@@ -22,12 +22,15 @@ STATIC_CONTENT_FILE = STATIC_DATA_DIR / "content.json"
 
 ContentDict = dict[str, Any]
 
+DEFAULT_DENSITY_GRID_SIZE = 320
+DEFAULT_DENSITY_SMOOTHING_FACTOR = 1.35
+
 
 def ratio_to_key(ratio: float) -> str:
     return f"{ratio:.2f}"
 
 
-def _estimate_bandwidth(values: np.ndarray) -> float:
+def _estimate_bandwidth(values: np.ndarray, smoothing_factor: float = DEFAULT_DENSITY_SMOOTHING_FACTOR) -> float:
     if values.size <= 1:
         return 1.0
 
@@ -37,11 +40,11 @@ def _estimate_bandwidth(values: np.ndarray) -> float:
     sigma = min(std, iqr / 1.34) if iqr > 0 else std
     if sigma <= 0:
         sigma = max(abs(float(values.mean())), 1.0)
-    bandwidth = 0.9 * sigma * values.size ** (-1 / 5)
+    bandwidth = 0.9 * sigma * values.size ** (-1 / 5) * smoothing_factor
     return bandwidth if bandwidth > 0 else 1.0
 
 
-def _build_density_curve(values: np.ndarray, grid_size: int = 200) -> dict[str, list[float]]:
+def _build_density_curve(values: np.ndarray, grid_size: int = DEFAULT_DENSITY_GRID_SIZE) -> dict[str, list[float]]:
     values = np.asarray(values, dtype=float)
     if values.size == 0:
         return {"x": [], "y": []}

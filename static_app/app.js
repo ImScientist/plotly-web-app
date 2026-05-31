@@ -43,7 +43,7 @@ function buildDensityFigure(curves, colors) {
         color: colors[index % colors.length],
         width: 3,
         shape: "spline",
-        smoothing: 1.1,
+        smoothing: 1.25,
       },
       marker: {
         color: colors[index % colors.length],
