@@ -85,7 +85,7 @@ select {
   appearance: none;
   border: 1px solid var(--panel-border);
   border-radius: 10px;
-  padding: 0.75rem 0.9rem;
+  padding: 0.5rem 0.9rem;
   font: inherit;
   background: #fff;
   color: var(--text);
