@@ -1,78 +1,89 @@
 # plotly web app
 
-## Setup 
-- Create an environment and install the required dependencies:
-    ```shell script
-    conda create -n plotly-web-app python=3.8 -y
-    conda activate plotly-web-app
-    pip install -r requirements.txt
-    pip install -e .
-    ```
+Interactive Dash app for exploring how different positive/negative score splits across multiple pods affect per-pod and average ROC-AUC.
 
-- Local test of the app:   
-  Dash uses Flask as the web framework. 
-  The underlying Flask app is available at `app.server`
-    ```shell script
-    export FLASK_APP=app:server
-    flask run
-    ```
- 
-- Speed up the app    
-  You have probably noticed that figures do not update instantly when you
-  change some parameters. Instead of splitting the data, calculating the 
-  roc-auc scores, 
-  generating and plotting the new figures for every change in the data 
-  splitting parameters, we can generate, dump and load all possible 
-  figures and roc-auc scores.  
+## Python and environment management
 
-  Generate the content by executing:
-    ```shell script
-    python create_content.py
-    ```
-    This content is used in `app_2.py`:
-    ```shell script
-    export FLASK_APP=app_2:server
-    flask run
-    ```
+This project now targets **Python 3.12** and uses **`uv`** as the default workflow.
+
+### Initialize the environment
+
+```bash
+uv python install 3.12
+uv sync
+```
+
+`uv sync` creates a local `.venv/` and installs the package plus the minimal direct runtime dependencies declared in `pyproject.toml`.
+
+### Direct runtime dependencies
+
+The project keeps only the libraries it imports directly at runtime:
+
+- `dash`
+- `gunicorn`
+- `numpy`
+- `plotly`
+- `scikit-learn`
+
+Transitive packages such as Flask, SciPy, and Werkzeug are installed automatically through those top-level dependencies.
+
+## Run locally
+
+### Live version
+
+This version recomputes the split distributions and ROC-AUC values on each slider update.
+
+```bash
+uv run python app.py
+```
+
+### Precomputed version
+
+Generate the cached figures and ROC-AUC combinations first:
+
+```bash
+uv run python create_content.py
+uv run python app_2.py
+```
+
+`app_2.py` is the faster variant and the default deployment target.
+
 
 ## Deployment
 
-#### Azure Web app deployment notes (do not use this service)  
-- In `web-app` -> `Configuration` -> `General settings` set the 
-  startup command to `gunicorn -b 0.0.0.0 app_2:server` or to 
-  `gunicorn -b 0.0.0.0 app:server` depending on what you want to run. 
+### Gunicorn
 
-#### Use google app engine (do not use this service)
-  - Create a `app.yaml` that contains info about the runtime and 
-  about the entrypoint. Then use the gcloud cli:
-    ```shell script
-    gcloud init
-    # go into the right project
-    gcloud app deploy ./app.yaml -Y
-    ```
+```bash
+uv run gunicorn app_2:server -b 0.0.0.0:8050
+```
 
-#### Use a docker image running on ubuntu VM
-- Build the image:   
-  In case you want to deploy the app somewhere else:
-  ```shell script
-  docker build -t plotly_app:1.0 . --build-arg runtime_path="."
-  ```
-  Launch a container to test the app:
-  ```shell script
-  docker run --rm --name dash_app -d -p 80:80 plotly_app:1.0
-  ```
-  If everything is fine, add the image to the dockerhub container registry:
-  ```shell script
-    docker login -u "$DOCKER_HUB_USR" \
-                 -p "$DOCKER_HUB_PWD"
-    
-    docker tag plotly_app:1.0 "${DOCKER_HUB_USR}"/plotly_app:1.0
-    
-    docker push "${DOCKER_HUB_USR}"/plotly_app:1.0
-  ```
-- Setup a ubuntu machine to run the docker container:
-  ```shell script
-  chmod +x vm_docker_setup.sh
-  ./vm_docker_setup.sh  
-  ```
+### Google App Engine
+
+`app.yaml` is configured for Python 3.12.
+
+```bash
+gcloud init
+gcloud app deploy ./app.yaml -Y
+```
+
+### Docker
+
+Build the image:
+
+```bash
+docker build -t plotly_app:1.0 . --build-arg runtime_path="."
+```
+
+Run it locally:
+
+```bash
+docker run --rm --name dash_app -d -p 80:80 plotly_app:1.0
+```
+
+If you want to run the published image on a VM:
+
+```bash
+chmod +x vm_docker_setup.sh
+./vm_docker_setup.sh
+```
 
